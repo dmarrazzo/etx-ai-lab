@@ -1,4 +1,4 @@
-version: 1.0
+version: 3
 created_by: donato
 domain: kafka on OpenShift container platform getting started guide
 document_outline: Getting Started with Streams for Apache Kafka on OpenShift

@@ -101,3 +101,9 @@ seed_examples:
           console-server.serviceaccount.yaml, and console-server.clusterrolebinding.yaml.
           Then, the console user interface service file is applied. Finally, the console route is applied. These files collectively create the necessary role, 
           role binding, service account, services, and route, all of which are required to run the console user interface.
+
+document:
+  repo: https://github.com:dmarrazzo/etx-ai-lab.git
+  commit: 5058d4837f4414a311bf944e248b9d570895e181
+  patterns:
+    - knowledge.md

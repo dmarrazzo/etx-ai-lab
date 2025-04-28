@@ -1,0 +1,39 @@
+version: 1.0
+created_by: donato
+domain: kafka on OpenShift container platform getting started guide
+document_outline: Getting Started with Streams for Apache Kafka on OpenShift
+seed_examples:
+  - context: |
+      This guide describes how to install and start using Streams for Apache Kafka on OpenShift Container Platform. You can install the Streams for Apache Kafka operator directly from the OperatorHub in the OpenShift web console. The Streams for Apache Kafka operator understands how to install and manage Kafka components. Installing from the OperatorHub provides a standard configuration of Streams for Apache Kafka that allows you to take advantage of automatic updates.
+      When the Streams for Apache Kafka operator is installed, it provides the resources to install instances of Kafka components. After installing a Kafka cluster, you can start producing and consuming messages.
+      Try Streams for Apache Kafka by creating a Kafka cluster on OpenShift. Connect to the Kafka cluster, then send and receive messages from a Kafka topic.
+    questions_and_answers:
+      - question: what are the prerequisites?
+        answer: |
+          - You have a Red Hat account.
+          - JDK 11 or later is installed.
+          - An OpenShift 4.14 and later cluster is available.
+          - The OpenShift oc command-line tool is installed and configured to connect to the running cluster.
+
+      - question: How to install the streams for apache kafka operator from the operatorhub?
+        answer: |
+          You can install and subscribe to the Streams for Apache Kafka operator using the OperatorHub in the OpenShift Container Platform web console.
+          This procedure describes how to create a project and install the Streams for Apache Kafka operator to that project. 
+          A project is a representation of a namespace. For manageability, it is a good practice to use namespaces to separate functions.
+          Prerequisites: access to an OpenShift Container Platform web console using an account with cluster-admin or strimzi-admin permissions.
+          - 1. Navigate in the OpenShift web console to the Home &gt; Projects page and create a project
+          - (namespace) for the installation. We use a project named streams-kafka in this example.
+          - 2. Navigate to the Operators &gt; OperatorHub page.
+          - 3. Scroll or type a keyword into the Filter by keyword box to find the Streams for Apache Kafka operator.
+          - The operator is located in the Streaming &amp; Messaging category.
+          - 4. Click Streams for Apache Kafka to display the operator information.
+
+      - question: how to Deploy a Kafka producer to OpenShift?
+        answer: |
+          ```
+          oc run kafka-producer -ti \ --image=registry.redhat.io/amq-streams/kafka-39-rhel9:2.9.0 \ --rm=true \
+          --restart=Never \
+          -- bin/kafka-console-producer.sh \
+          --bootstrap-server my-cluster-kafka-bootstrap:9092 \
+          --topic my-topic
+          ```

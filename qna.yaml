@@ -5,8 +5,7 @@ document_outline: Getting Started with Streams for Apache Kafka on OpenShift
 seed_examples:
   - context: |
       This guide describes how to install and start using Streams for Apache Kafka on OpenShift Container Platform. You can install the Streams for Apache Kafka operator directly from the OperatorHub in the OpenShift web console. The Streams for Apache Kafka operator understands how to install and manage Kafka components. Installing from the OperatorHub provides a standard configuration of Streams for Apache Kafka that allows you to take advantage of automatic updates.
-      When the Streams for Apache Kafka operator is installed, it provides the resources to install instances of Kafka components. After installing a Kafka cluster, you can start producing and consuming messages.
-      Try Streams for Apache Kafka by creating a Kafka cluster on OpenShift. Connect to the Kafka cluster, then send and receive messages from a Kafka topic.
+      When the Streams for Apache Kafka operator is installed, it provides the resources to install instances of Kafka components.
     questions_and_answers:
       - question: what are the prerequisites?
         answer: |
@@ -28,8 +27,30 @@ seed_examples:
           - The operator is located in the Streaming &amp; Messaging category.
           - 4. Click Streams for Apache Kafka to display the operator information.
 
-      - question: how to Deploy a Kafka producer to OpenShift?
+      - question: How to add external route listener configuration?
         answer: |
+          Add route listener configuration to create an OpenShift route named listener1.
+          The listener configuration must be set to the route type. 
+          You add the listener configuration under listeners in the Kafka configuration.
+
+          ```
+          apiVersion: kafka.strimzi.io/v1beta2 kind: Kafka metadata: name: my-cluster
+          namespace: streams-kafka 
+          spec: kafka: 
+          # ... listeners: 
+            - name: listener1 
+              port: 9094 type: 
+              route tls: true
+          ```  
+
+  - context: |
+      This guide describes how to install and start using Streams for Apache Kafka on OpenShift Container Platform. 
+      Connect to the Kafka cluster, then send and receive messages from a Kafka topic.
+    questions_and_answers:
+      - question: how to deploy a Kafka producer to OpenShift?
+        answer: |
+          this the command line to deploy a producer:
+
           ```
           oc run kafka-producer -ti \ --image=registry.redhat.io/amq-streams/kafka-39-rhel9:2.9.0 \ --rm=true \
           --restart=Never \
@@ -37,3 +58,46 @@ seed_examples:
           --bootstrap-server my-cluster-kafka-bootstrap:9092 \
           --topic my-topic
           ```
+
+      - question: how to deploy a Kafka consumer to OpenShift?
+        answer: |
+          this the command line to deploy a consumer:
+
+          ```
+          oc run kafka-consumer -ti \ --image=registry.redhat.io/amq-streams/kafka-39-rhel9:2.9.0 \ --rm=true \ --restart=Never \ -- bin/kafka-console-consumer.sh \ --bootstrap-server my-cluster-kafka-bootstrap:9092 \ --topic my-topic \ --from-beginning
+          ```
+      - question: how to send and receive messages from Kafka clients running locally
+        answer: |
+          Use a command-line interface to run a Kafka producer and consumer on a local machine.
+
+          1. Download and extract the Streams for Apache Kafka &lt;version&gt; binaries from the  Streams for Apache Kafka software downloads page.
+
+          2. Unzip the amq-streams&lt;version&gt; -bin.zip file to any destination.
+
+          3. Open a command-line interface, and start the Kafka console producer with the topic my-topic and the authentication properties for TLS.
+          - Add the properties that are required for accessing the Kafka broker with an OpenShift route .
+          - Use the hostname and port 443 for the OpenShift route you are using.
+          - Use the password and reference to the truststore you created for the broker certificate.
+
+  - context: |
+      describes how to install and start using STREAMS FOR APACHE KAFKA CONSOLE
+    questions_and_answers:
+
+      - question: What is the purpose of editing the console-server.clusterrolebinding.yaml file during the installation of Streams for Apache Kafka Console, and what specific change is made to this file?
+        answer: |
+          The console-server.clusterrolebinding.yaml file is edited during the installation process to configure the namespace 
+          where the Streams for Apache Kafka Console instance will be installed.  Specifically, the namespace is set to the desired project, such as "my-project", to ensure the console's role is correctly bound to its service account within that namespace.
+           This step is crucial for proper authorization and access control of the console.
+           
+      - question: What are the two secret values that need to be created within the console-ui-secrets Secret, and what is their purpose in the Streams for Apache Kafka Console installation?
+        answer: |
+          The console-ui-secrets Secret requires two secret values: SESSION_SECRET and NEXTAUTH_SECRET. These secrets are essential for security within the Streams for Apache Kafka Console. 
+          The SESSION_SECRET is used for managing user sessions, ensuring that user authentication and session data are handled securely. The NEXTAUTH_SECRET is used for authentication within the NextAuth.js framework, which is likely used for managing user authentication in the console.
+          
+      - question: In what order are the installation files applied when installing the Streams for Apache Kafka Console, and what main components are created by these files?
+        answer: |
+          When installing the Streams for Apache Kafka Console, the installation files are applied in a specific order to ensure proper setup.
+          First, the console security resources are applied, which includes console-server.clusterrole.yaml, 
+          console-server.serviceaccount.yaml, and console-server.clusterrolebinding.yaml.
+          Then, the console user interface service file is applied. Finally, the console route is applied. These files collectively create the necessary role, 
+          role binding, service account, services, and route, all of which are required to run the console user interface.
